@@ -1,32 +1,44 @@
 const request = require("supertest");
-const app = require("../server"); 
+const app = require("../app"); // ajuste o caminho se necessário
 
-describe("Testando POST /itens", () => {
-  let lista;
+describe("Testes da API /itens", () => {
 
-  beforeEach(() => {
-    lista = [
-      { email: "teste@gmail.com" }
-    ];
-
-    app.locals.lista = lista;
+  test("GET /itens deve retornar lista com 2 itens iniciais", async () => {
+    const response = await request(app).get("/itens");
+    
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.length).toBe(2);
   });
 
-  test("Não deve cadastrar se o email já existir", async () => {
-    const res = await request(app)
+  test("POST /itens deve adicionar novo item", async () => {
+    const novo = {
+      nome: "Carlos",
+      idade: 30,
+      email: "carlos@teste.com"
+    };
+
+    const response = await request(app)
       .post("/itens")
-      .send({ email: "teste@gmail.com" });
+      .send(novo);
 
-    expect(res.statusCode).toBe(400);
-    expect(res.body.erro).toBe("O e-mail já está cadastrado!");
+    expect(response.status).toBe(201);
+    expect(response.body).toMatchObject(novo);
   });
 
-  test("✔ Deve cadastrar se o email for novo", async () => {
-    const res = await request(app)
+  test("POST /itens não deve permitir e-mail duplicado", async () => {
+    const duplicado = {
+      nome: "Bruna",
+      idade: 45,
+      email: "bruna@teste.com"
+    };
+
+    const response = await request(app)
       .post("/itens")
-      .send({ email: "novo@gmail.com" });
+      .send(duplicado);
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body.mensagem).toBe("Cadastro realizado com sucesso!");
+    expect(response.status).toBe(400);
+    expect(response.body.erro).toBe("O e-mail já cadastrado!");
   });
+
 });
