@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../app"); // ajuste o caminho se necessário
+const app = require("../server"); // ajuste o caminho se necessário
 
 describe("Testes da API /itens", () => {
 
