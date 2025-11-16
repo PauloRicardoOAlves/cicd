@@ -1,4 +1,4 @@
-name: CI Pipeline JavaScript
+name: CI Node.js Express
 
 on:
   push:
@@ -13,10 +13,10 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: '18'
 
       - name: Instalar dependências
         run: npm install
@@ -27,7 +27,7 @@ jobs:
   deploy:
     needs: build-test
     runs-on: ubuntu-latest
-    if: success()
+    if: success() 
 
     steps:
       - name: Checkout do código
@@ -35,6 +35,7 @@ jobs:
 
       - name: Deploy automático
         run: |
-          echo "Rodar comandos de deploy aqui"
-          # Exemplo:
-          # rsync -avz ./dist usuario@servidor:/var/www/app
+          echo "Aqui você coloca o comando de deploy"
+          # Exemplo simples:
+          # rsync -avz ./ usuario@servidor:/var/www/app
+          # ou docker compose up -d
